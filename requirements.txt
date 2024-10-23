@@ -1,0 +1,18 @@
+# requirements.txt for MPNN-MLP-ViscosityPrediction
+
+numpy>=1.26.4
+pandas>=2.2.3
+scikit-learn>=1.0.2
+torch>=2.3.0
+torch-geometric>=1.7.0
+rdkit-pypi>=2024.03.5  # RDKit for handling chemical structures
+shap>=0.31.0
+optuna>=2.0.0
+matplotlib>=3.9.2
+networkx>=3.2.1
+
+# Development tools
+pytest>=5.0
+flake8>=3.8.0
+black>=20.8b1
+
