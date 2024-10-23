@@ -1,7 +1,8 @@
 # MPNN-MLP Viscosity Prediction Tutorial
 
 ## Overview
-Deep eutectic solvents (DESs) are promising green solvents widely used in chemical processes, separations, and catalysis, where viscosity plays a critical role in their industrial feasibility. However, measuring DES viscosity is time-consuming and resource-intensive due to numerous influencing factors. In this work, a MPNN+GAT+MLP framework is proposed for developing a DES viscosity prediction model through end-to-end, data-driven training, emphasizing the implicit extraction and embedding of effective features. Specifically, a dataset comprising 5790 DESs and their corresponding experimental viscosity values was compiled from published literature.  Recognizing the significance of SMILES in predicting DES viscosity, we employ a combination of Message Passing Neural Networks (MPNN) and stacked Graph Attention Networks (GAT) to implicitly model sub-character associations and extract meaningful features.  A Multi-Layer Perceptron (MLP) is then employed to integrate these molecular features with physical and chemical properties, enabling multiscale feature fusion. Additionally, the inclusion of predicted DES density as an input feature enhances the model’s accuracy while reducing reliance on experimental measurements. The extracted features are used as priors and, together with the raw features, are input into the model to assist in training and prediction. Comprehensive experiments confirm that this framework enhances DES viscosity prediction accuracy, paving the way for more efficient and sustainable green chemistry applications.
+Deep eutectic solvents (DESs) are promising green solvents widely used in chemical processes, separations, and catalysis, where viscosity plays a critical role in their industrial feasibility. However, measuring DES viscosity is time-consuming and resource-intensive due to numerous influencing factors. In this work, a MPNN+GAT+MLP framework is proposed for developing a DES viscosity prediction model through end-to-end, data-driven training, emphasizing the implicit extraction and embedding of effective features. Specifically, a dataset comprising 5790 DESs and their corresponding experimental viscosity values was compiled from published literature. Recognizing the significance of SMILES in predicting DES viscosity, we employ a combination of Message Passing Neural Networks (MPNN) and stacked Graph Attention Networks (GAT) to implicitly model sub-character associations and extract meaningful features. A Multi-Layer Perceptron (MLP) is then employed to integrate these molecular features with physical and chemical properties, enabling multiscale feature fusion. Additionally, the inclusion of predicted DES density as an input feature enhances the model’s accuracy while reducing reliance on experimental measurements. The extracted features are used as priors and, together with the raw features, are input into the model to assist in training and prediction. Comprehensive experiments confirm that this framework enhances DES viscosity prediction accuracy, paving the way for more efficient and sustainable green chemistry applications.
+
 ## Prerequisites
 
 ### System Information
@@ -106,17 +107,12 @@ print(graph_data)  # Graph data ready for GNN
 
 ### Step 3: Train the MPNN and MLP Models
 
-#### 3.1 Training the GNN for Feature Extraction
-First, we need to train the MPNN (Graph Neural Network) to extract graph-level features. Use the `train_gnn.py` script for this purpose.
+Train the Message Passing Neural Network (MPNN) to extract meaningful graph-level features using the `train_model.py` script:
 
 ```bash
-python scripts/train_model.py --data path/to/your/data.csv --output models/gnn_model.pth
+python scripts/train_model.py --data path/to/your/data.csv
 ```
-- The script will train the GNN model using graph features generated from SMILES strings.
-- The GNN model will be saved in the specified output path.
-
-#### 3.2 Extract Features Using the Trained GNN
-After training the MPNN, extract features for the MLP using the trained GNN model:
+This command will train the MPNN model using graph features generated from SMILES strings. After training, extract features for the Multi-Layer Perceptron (MLP) using the trained GNN model:
 
 ```python
 from src.training.train_gnn import extract_features_and_cache
@@ -124,17 +120,12 @@ from src.training.train_gnn import extract_features_and_cache
 features_smiles1, _, _, _ = extract_features_and_cache(gnn_model, smiles_list1, device)
 features_smiles2, _, _, _ = extract_features_and_cache(gnn_model, smiles_list2, device)
 ```
-This function will return features that will be passed to the MLP.
-
-#### 3.3 Train the MLP
-Now, use the extracted graph features, combined with the numeric features, to train the MLP for predicting the viscosity.
+This function will return features that are passed to the MLP. Next, use the extracted graph features, combined with the numeric features, to train the MLP for predicting viscosity:
 
 ```bash
-python scripts/train_model.py --data path/to/your/data.csv --model_output models/mlp_model.pth
+python scripts/train_model.py --data path/to/your/data.csv
 ```
-This command will:
-- Train the MLP using the combined feature set.
-- Save the trained model to the specified output path.
+This script trains the MLP using the combined feature set.
 
 ### Step 4: Hyperparameter Optimization
 The model's performance can be further improved by optimizing hyperparameters such as learning rate, batch size, and the number of hidden layers. This can be achieved using `Optuna` for hyperparameter search.
@@ -183,5 +174,4 @@ If you would like to contribute to this project, please feel free to fork the re
 - **Improving Model Performance**: Experiment with additional molecular descriptors or advanced graph neural network architectures.
 - **Feature Engineering**: Introduce new methods for feature extraction that could enhance the model's predictive power.
 - **Adding New Models**: Integrate other machine learning models or improve the current GNN and MLP implementation.
-
 
