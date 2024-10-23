@@ -170,7 +170,8 @@ The following script can be used to evaluate a pre-trained MLP model for DES vis
 
 ### Usage
 First, replace the file paths in the script (`model_path` and `data_path`) with the actual paths of your model and data files. (Shared file via cloud storage: Breadcrumbs MPNN-MLP for Viscosity Prediction of DESs, Link: https://pan.baidu.com/s/1of4EejchhFfQd0b9s4EJmg?pwd=43vd  Access code: 43vd)
-Then, run the script:
+
+Then, run the script: (Note:The saved model is from a single fold that performed well, so the prediction results may not match the performance of a model trained on the complete dataset.)
 
 ```bash
 python evaluate_model.py
