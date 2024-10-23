@@ -1,0 +1,104 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from sklearn.metrics import r2_score
+
+# Model definition, ensuring it matches the original MLPModel used during training
+class MLPModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers):
+        super(MLPModel, self).__init__()
+        self.layers = nn.ModuleList()
+        self.layers.append(nn.Linear(input_dim, hidden_dim))
+        for _ in range(num_layers - 1):
+            self.layers.append(nn.Linear(hidden_dim, hidden_dim))
+        self.layers.append(nn.Linear(hidden_dim, output_dim))
+
+    def forward(self, x):
+        for i in range(len(self.layers) - 1):
+            x = F.relu(self.layers[i](x))
+        x = self.layers[-1](x)
+        return x
+
+
+def load_data_and_model(model_path, data_path, device):
+    # Load saved data
+    data = torch.load(data_path)
+
+    # Confirm data structure
+    best_train_data = {
+        'X_train': data['X_train'],
+        'y_train': data['y_train'],
+        'features_smiles1_train': data['features_smiles1_train'],
+        'features_smiles2_train': data['features_smiles2_train']
+    }
+    best_test_data = {
+        'X_test': data['X_test'],
+        'y_test': data['y_test'],
+        'features_smiles1_test': data['features_smiles1_test'],
+        'features_smiles2_test': data['features_smiles2_test']
+    }
+
+    # Initialize and load the model
+    input_dim = best_train_data['X_train'].shape[1] + 64  # Ensure the dimension matches training
+    hidden_dim = 128
+    output_dim = 1
+    num_layers = 3
+
+    mlp_model = MLPModel(input_dim, hidden_dim, output_dim, num_layers).to(device)
+    mlp_model.load_state_dict(torch.load(model_path, map_location=device))
+    mlp_model.eval()  # Set the model to evaluation mode
+
+    # Confirm model structure
+    print("Model loaded with the following structure:")
+    print(mlp_model)
+
+    return mlp_model, best_train_data, best_test_data
+
+
+def evaluate_model(model, best_train_data, best_test_data, device):
+    model.eval()
+    criterion = nn.MSELoss()
+
+    # Extract data
+    X_train = best_train_data['X_train'].to(device)
+    y_train = best_train_data['y_train'].to(device)
+    features_smiles1_train = best_train_data['features_smiles1_train'].to(device)
+    features_smiles2_train = best_train_data['features_smiles2_train'].to(device)
+
+    X_test = best_test_data['X_test'].to(device)
+    y_test = best_test_data['y_test'].to(device)
+    features_smiles1_test = best_test_data['features_smiles1_test'].to(device)
+    features_smiles2_test = best_test_data['features_smiles2_test'].to(device)
+
+    # Combine features
+    combined_train_features = torch.cat((features_smiles1_train, features_smiles2_train, X_train), dim=1)
+    combined_test_features = torch.cat((features_smiles1_test, features_smiles2_test, X_test), dim=1)
+
+    # Calculate loss and R² on training set
+    with torch.no_grad():
+        train_pred = model(combined_train_features)
+        train_loss = criterion(train_pred, y_train)
+        train_r2 = r2_score(y_train.cpu().numpy(), train_pred.cpu().numpy())
+
+        # Calculate loss and R² on test set
+        test_pred = model(combined_test_features)
+        test_loss = criterion(test_pred, y_test)
+        test_r2 = r2_score(y_test.cpu().numpy(), test_pred.cpu().numpy())
+
+        print(f'Train Loss: {train_loss:.4f}, Train R²: {train_r2:.4f}')
+        print(f'Test Loss: {test_loss:.4f}, Test R²: {test_r2:.4f}')
+
+
+if __name__ == "__main__":
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
+
+    # Provide your file paths here
+    model_path = r'path/to/your/best_mlp_model.pth'
+    data_path = r'path/to/your/best_data.pt'
+
+    # Load model and data
+    model, best_train_data, best_test_data = load_data_and_model(model_path, data_path, device)
+
+    # Evaluate the model
+    evaluate_model(model, best_train_data, best_test_data, device)
