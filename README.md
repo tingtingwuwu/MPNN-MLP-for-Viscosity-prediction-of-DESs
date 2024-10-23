@@ -164,6 +164,18 @@ print("SHAP values:", shap_values)
 ```
 SHAP values provide insight into which features have the most significant impact on the prediction, which can be useful for debugging and understanding model behavior.
 
+## Model Evaluation Script
+
+The following script can be used to evaluate a pre-trained MLP model for DES viscosity prediction. It will load both the trained model and the data used during the training process, and output the performance metrics (MSE, R²) for both the training and test datasets.
+
+### Usage
+First, replace the file paths in the script (`model_path` and `data_path`) with the actual paths of your model and data files. (Shared file via cloud storage: Breadcrumbs MPNN-MLP for Viscosity Prediction of DESs, Link: https://pan.baidu.com/s/1of4EejchhFfQd0b9s4EJmg?pwd=43vd  Access code: 43vd)
+Then, run the script:
+
+```bash
+python evaluate_model.py
+```
+
 ## Common Issues and Troubleshooting
 - **ModuleNotFoundError**: Ensure that you have installed all dependencies correctly using `pip install -r requirements.txt`.
 - **CUDA-related Issues**: Verify that your CUDA version is compatible with the installed PyTorch version. You can check compatibility [here](https://pytorch.org/get-started/previous-versions/).
