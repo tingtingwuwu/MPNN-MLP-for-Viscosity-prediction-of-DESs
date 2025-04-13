@@ -177,6 +177,9 @@ Then, run the script: (Note:The saved model is from a single fold that performed
 python evaluate_model.py
 ```
 
+We provide a user-friendly inference script (predict_viscosity.py) to facilitate convenient access to our viscosity prediction model. The associated model files are available via Baidu Netdisk (BreadcrumbsMPNN-MLP-for-Viscosity-prediction-of-DESs, link: https://pan.baidu.com/s/1DZJZHDLlY8exK2Jgtp1zyA?pwd=sk4w, extraction code: sk4w). After successfully downloading the dataset and deploying the required models locally, users can obtain viscosity predictions by simply inputting the chemical names of two components and numerical parameters (e.g., temperature) through a command-line interface. The script automatically performs SMILES conversion, feature extraction, normalization, and prediction, returning the viscosity in centipoise (cP). To further enhance usability for non-expert users, we plan to develop a graphical user interface (GUI) in future work to enable more intuitive interaction and broader applicability.
+
+
 ## Common Issues and Troubleshooting
 - **ModuleNotFoundError**: Ensure that you have installed all dependencies correctly using `pip install -r requirements.txt`.
 - **CUDA-related Issues**: Verify that your CUDA version is compatible with the installed PyTorch version. You can check compatibility [here](https://pytorch.org/get-started/previous-versions/).
