@@ -168,18 +168,6 @@ SHAP values provide insight into which features have the most significant impact
 
 The following script can be used to evaluate a pre-trained MLP model for DES viscosity prediction. It will load both the trained model and the data used during the training process, and output the performance metrics (MSE, R²) for both the training and test datasets.
 
-### Usage
-First, replace the file paths in the script (`model_path` and `data_path`) with the actual paths of your model and data files. (Shared file via cloud storage: Breadcrumbs MPNN-MLP for Viscosity Prediction of DESs, Link: https://pan.baidu.com/s/1of4EejchhFfQd0b9s4EJmg?pwd=43vd  Access code: 43vd)
-
-Then, run the script: (Note:The saved model is from a single fold that performed well, so the prediction results may not match the performance of a model trained on the complete dataset.)
-
-```bash
-python evaluate_model.py
-```
-
-We provide a user-friendly inference script (predict_viscosity.py) to facilitate convenient access to our viscosity prediction model. The associated model files are available via Baidu Netdisk (BreadcrumbsMPNN-MLP-for-Viscosity-prediction-of-DESs, link: https://pan.baidu.com/s/1DZJZHDLlY8exK2Jgtp1zyA?pwd=sk4w, extraction code: sk4w). After successfully downloading the dataset and deploying the required models locally, users can obtain viscosity predictions by simply inputting the chemical names of two components and numerical parameters (e.g., temperature) through a command-line interface. The script automatically performs SMILES conversion, feature extraction, normalization, and prediction, returning the viscosity in centipoise (cP). To further enhance usability for non-expert users, we plan to develop a graphical user interface (GUI) in future work to enable more intuitive interaction and broader applicability.
-
-
 ## Common Issues and Troubleshooting
 - **ModuleNotFoundError**: Ensure that you have installed all dependencies correctly using `pip install -r requirements.txt`.
 - **CUDA-related Issues**: Verify that your CUDA version is compatible with the installed PyTorch version. You can check compatibility [here](https://pytorch.org/get-started/previous-versions/).
